@@ -25,6 +25,22 @@ router.get('/main', (req, res) => {
       }
 });
 
+router.get('/perfil', (req, res) => {    
+  if (req.isAuthenticated()) {
+      res.render('perfil');
+    } else {
+      res.redirect('/');
+    }
+});
+
+router.get('/criartarefa', (req, res) => {    
+  if (req.isAuthenticated()) {
+      res.render('criartarefa');
+    } else {
+      res.redirect('/');
+    }
+});
+
 router.get('/tarefa', (req, res) => {
     if (req.isAuthenticated()) {
         res.render('tarefa');

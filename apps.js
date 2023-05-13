@@ -52,6 +52,8 @@ app.use('/', routes);
 app.use('/main', routes);
 app.use('/tarefa', routes);
 app.use('/cadastro', routes);
+app.use('/criartarefa', routes);
+app.use('/perfil', routes);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
