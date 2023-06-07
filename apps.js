@@ -35,6 +35,7 @@ app.use(passport.session());
 
 // Configuração do Passport
 passport.use(new GoogleStrategy({
+    scope: ['profile', 'email'],
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: process.env.CALLBACK_URL
@@ -63,17 +64,17 @@ const oauth2Client = new google.auth.OAuth2(
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 
 app.get('/', function(req, res) {
-  res.render('pages/auth');
+  res.render('views/index');
 });
 app.get('/success', (req, res) => {
   if (userProfile) {  // Verifique se o usuário está autenticado
-    res.render('pages/success', { user: userProfile });  // Renderiza a view 'success' e passa o perfil do usuário
+    res.render('views/main', { user: userProfile });  // Renderiza a view 'success' e passa o perfil do usuário
   } else {
     res.redirect('/');  // Se o usuário não estiver autenticado, redireciona para a página inicial
   }
 });
 
-//app.get('/success', (req, res) => res.send(userProfile));
+//app.get('/main', (req, res) => res.send(userProfile));
 app.get('/error', (req, res) => res.send("error logging in"));
 
 app.get('/auth/google', 
