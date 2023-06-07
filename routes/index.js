@@ -37,6 +37,14 @@ router.get('/main', (req, res) => {
       }
 });
 
+router.get('/criartarefa', (req, res) => {    
+  if (req.isAuthenticated()) {
+      res.render('criartarefa');
+    } else {
+      res.redirect('/');
+    }
+});
+
 router.get('/tarefa', (req, res) => {
     if (req.isAuthenticated()) {
         res.render('tarefa');
