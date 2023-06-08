@@ -103,7 +103,7 @@ router.get('/main', (req, res) => {
 router.get('/error', (req, res) => res.send("error logging in"));
 
 router.get('/index/google',
-  passport.authenticate('google', { scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar.readonly'] }));
+  passport.authenticate('google', { scope: ['profile', 'email', 'https://www.googleapis.com/index/calendar.readonly'] }));
 
 router.get('/index/google/callback',
   passport.authenticate('google', { failureRedirect: '/error' }),
