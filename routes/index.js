@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const passport = require('passport');
-const bcrypt = require('bcrypt');
-const { readData, writeData } = require('../filestorage');
+const passport = require("passport");
+const bcrypt = require("bcrypt");
+const { readData, writeData } = require("../filestorage");
 
 let users = [];
 
@@ -17,59 +17,58 @@ async function loadUsers() {
 
 loadUsers();
 
-router.get('/', (req, res) => {
-  res.render('index', { title: 'Página inicial' });
+router.get("/", (req, res) => {
+  res.render("index", { title: "Página inicial" });
 });
 router.post(
-  '/login',
-  passport.authenticate('local', {
-    successRedirect: '/main',
-    failureRedirect: '/',
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/main",
+    failureRedirect: "/",
     failureFlash: true,
   })
 );
 
-router.get('/main', (req, res) => {
+router.get("/main", (req, res) => {
   if (req.isAuthenticated()) {
-    res.render('main');
+    res.render("main");
   } else {
-    res.redirect('/');
+    res.redirect("/");
   }
 });
 
-router.get('/criartarefa', (req, res) => {
+router.get("/criartarefa", (req, res) => {
   if (req.isAuthenticated()) {
-    res.render('criartarefa');
+    res.render("criartarefa");
   } else {
-    res.redirect('/');
+    res.redirect("/");
   }
 });
 
-router.get('/tarefa', (req, res) => {
+router.get("/tarefa", (req, res) => {
   if (req.isAuthenticated()) {
-    res.render('tarefa');
+    res.render("tarefa");
   } else {
-    res.redirect('/');
+    res.redirect("/");
   }
 });
 
-router.get('/cadastro', (req, res) => {
-  res.render('cadastro', { message: req.flash('error') });
+router.get("/cadastro", (req, res) => {
+  res.render("cadastro", { message: req.flash("error") });
 });
 
-router.get('/logout', (req, res) => {
-  const successMessage = 'Você saiu da sua conta';
-  req.session.destroy(err => {
+router.get("/logout", (req, res) => {
+  const successMessage = "Você saiu da sua conta";
+  req.session.destroy((err) => {
     if (err) {
       console.log(err);
-      return res.redirect('/main');
+      return res.redirect("/main");
     }
-    res.render('index', { message: null, success: successMessage });
+    res.render("index", { message: null, success: successMessage });
   });
 });
 
-
-router.post('/cadastro', async (req, res) => {
+router.post("/cadastro", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = {
@@ -80,42 +79,53 @@ router.post('/cadastro', async (req, res) => {
     users.push(user);
     // Aguarde a conclusão da função writeData antes de redirecionar
     await writeData(users);
-    res.redirect('/');
+    res.redirect("/");
   } catch (err) {
     console.error(err); // Adicione esta linha para ver o erro no console, se houver algum
-    req.flash('error', 'Ocorreu um erro ao tentar criar a conta');
-    res.redirect('/cadastro');
+    req.flash("error", "Ocorreu um erro ao tentar criar a conta");
+    res.redirect("/cadastro");
   }
 });
 
-router.get('/', function (req, res) {
-  res.render('views/index');
+router.get("/", function (req, res) {
+  res.render("views/index");
 });
-router.get('/main', (req, res) => {
-  if (userProfile) {  // Verifique se o usuário está autenticado
-    res.render('views/main', { user: userProfile });  // Renderiza a view 'success' e passa o perfil do usuário
+router.get("/main", (req, res) => {
+  if (userProfile) {
+    // Verifique se o usuário está autenticado
+    res.render("views/main", { user: userProfile }); // Renderiza a view 'success' e passa o perfil do usuário
   } else {
-    res.redirect('/');  // Se o usuário não estiver autenticado, redireciona para a página inicial
+    res.redirect("/"); // Se o usuário não estiver autenticado, redireciona para a página inicial
   }
 });
 
 //app.get('/main', (req, res) => res.send(userProfile));
-router.get('/error', (req, res) => res.send("error logging in"));
+router.get("/error", (req, res) => res.send("error logging in"));
 
-router.get('/index/google',
-  passport.authenticate('google', { scope: ['profile', 'email', 'https://www.googleapis.com/index/calendar.readonly'] }));
+router.get(
+  "/index/google",
+  passport.authenticate("google", {
+    scope: [
+      "profile",
+      "email",
+      "https://www.googleapis.com/auth/calendar.readonly",
+    ],
+  })
+);
 
-router.get('/index/google/callback',
-  passport.authenticate('google', { failureRedirect: '/error' }),
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/error" }),
   function (req, res) {
     // Successful authentication, redirect success.
-    res.redirect('/main');
-  });
+    res.redirect("/main");
+  }
+);
 // Rotas
-router.get('/calendar', (req, res) => {
+router.get("/calendar", (req, res) => {
   if (!req.user) {
     // Se o usuário não estiver autenticado, redireciona para a página inicial
-    res.redirect('/');
+    res.redirect("/");
   } else {
     // Usando as credenciais do usuário para acessar a API do Google Calendar
     const oauth2Client = new google.auth.OAuth2(
@@ -124,26 +134,29 @@ router.get('/calendar', (req, res) => {
       process.env.CALLBACK_URL
     );
     oauth2Client.setCredentials({
-      access_token: req.user.accessToken
+      access_token: req.user.accessToken,
     });
 
-    const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+    const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
-    calendar.events.list({
-      calendarId: 'primary',
-      timeMin: (new Date()).toISOString(),
-      maxResults: 10,
-      singleEvents: true,
-      orderBy: 'startTime'
-    }, (err, result) => {
-      if (err) return console.log('The API returned an error: ' + err);
-      const events = result.data.items;
-      if (events.length) {
-        res.render('calendar', { events });  // Renderiza a página 'calendar' e passa os eventos
-      } else {
-        console.log('No upcoming events found.');
+    calendar.events.list(
+      {
+        calendarId: "primary",
+        timeMin: new Date().toISOString(),
+        maxResults: 10,
+        singleEvents: true,
+        orderBy: "startTime",
+      },
+      (err, result) => {
+        if (err) return console.log("The API returned an error: " + err);
+        const events = result.data.items;
+        if (events.length) {
+          res.render("calendar", { events }); // Renderiza a página 'calendar' e passa os eventos
+        } else {
+          console.log("No upcoming events found.");
+        }
       }
-    });
+    );
   }
 });
 
