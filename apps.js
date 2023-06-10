@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const ejs = require("ejs");
 const { google } = require("googleapis");
-const privatekey = require("credentials.json");
+const privatekey = require("./credentials.json");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
@@ -105,6 +105,7 @@ createEvent();
 
 // Defina os escopos que precisamos acessar
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
+
 
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");

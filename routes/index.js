@@ -122,7 +122,7 @@ router.get(
   }
 );
 // Rotas
-router.get("/calendar", (req, res) => {
+router.get("/criartarefa", (req, res) => {
   if (!req.user) {
     // Se o usuário não estiver autenticado, redireciona para a página inicial
     res.redirect("/");
@@ -151,7 +151,7 @@ router.get("/calendar", (req, res) => {
         if (err) return console.log("The API returned an error: " + err);
         const events = result.data.items;
         if (events.length) {
-          res.render("calendar", { events }); // Renderiza a página 'calendar' e passa os eventos
+          res.render("criartarefa", { events }); // Renderiza a página 'calendar' e passa os eventos
         } else {
           console.log("No upcoming events found.");
         }
