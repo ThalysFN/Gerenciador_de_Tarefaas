@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const ejs = require("ejs");
 const { google } = require("googleapis");
-const privatekey = require("./credentials.json");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
@@ -73,35 +72,6 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.CALLBACK_URL
 );
 
-async function createEvent() {
-  const calendar = google.calendar({ version: "v3", auth: jwtClient });
-
-  const event = {
-    summary: "Meu Evento",
-    location: "Local do evento",
-    description: "Descrição do evento",
-    start: {
-      dateTime: "2023-06-09T09:00:00",
-      timeZone: "America/Sao_Paulo",
-    },
-    end: {
-      dateTime: "2023-06-09T17:00:00",
-      timeZone: "America/Sao_Paulo",
-    },
-  };
-
-  try {
-    const response = await calendar.events.insert({
-      calendarId: "primary",
-      resource: event,
-    });
-    console.log("Evento criado: ", response.data.htmlLink);
-  } catch (error) {
-    console.error("Erro ao criar o evento: ", error.message);
-  }
-}
-
-createEvent();
 
 // Defina os escopos que precisamos acessar
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
