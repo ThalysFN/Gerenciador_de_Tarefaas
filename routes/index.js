@@ -109,6 +109,7 @@ router.get(
       "profile",
       "email",
       "https://www.googleapis.com/auth/calendar.readonly",
+      "https://www.googleapis.com/auth/calendar",
     ],
   })
 );
