@@ -131,7 +131,9 @@ router.get("/criartarefa", (req, res) => {
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      process.env.CALLBACK_URL
+      process.env.CALLBACK_URL,
+      process.env.PRIVATE_KEY,
+      process.env.CALENDAR_ID
     );
     oauth2Client.setCredentials({
       access_token: req.user.accessToken,
