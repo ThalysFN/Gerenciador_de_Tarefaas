@@ -96,7 +96,7 @@ function createEvent(eventTitle, eventStart, eventEnd, eventDescription) {
   };
 
   gapi.client.calendar.events.insert({
-    'calendarId': 'primary',
+    'calendarId': process.env.CALENDARID,
     'resource': event
   }).then(function (response) {
     console.log('Evento criado: ', response);
@@ -122,8 +122,8 @@ function getURLParameters(url) {
 // Função para inicializar a biblioteca do Google Calendar API
 function initClient() {
   gapi.client.init({
-    private_key: "AIzaSyCCtHbadqRjVUiOhGLKS-7doD6zkoFHvEk" ,
-    clientId: "801538061580-sg0a8iku9leddfh1v2c0c3at4jvf6sda.apps.googleusercontent.com",
+    private_key: process.env.PRIVATE_KEY,
+    clientId: process.env.GOOGLE_CLIENT_ID,
     discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
     scope: 'https://www.googleapis.com/auth/calendar.events'
   }).then(function () {

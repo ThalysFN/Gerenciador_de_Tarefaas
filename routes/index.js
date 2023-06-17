@@ -5,7 +5,8 @@ const bcrypt = require("bcrypt");
 const { readData, writeData } = require("../filestorage");
 const { google } = require('google-auth-library');
 const { JWT } = require('google-auth-library');
-
+const fs = require('fs');
+const crypto = require('crypto');
 let users = [];
 
 // Carregar os dados dos usuários do MongoDB
@@ -146,7 +147,7 @@ router.get("/criartarefa", (req, res) => {
 
     calendar.events.list(
       {
-        calendarId: "primary",
+        calendarId: process.env.CALENDAR_ID,
         timeMin: new Date().toISOString(),
         maxResults: 10,
         singleEvents: true,
@@ -185,9 +186,11 @@ router.post('/createEvent', (req, res) => {
   // Fazer a autenticação e criar o evento no calendário
   const jwtClient = new JWT({
     email: process.env.CLIENT_EMAIL,
-    key: PRIVATE_KEY,
+    key: process.env.PRIVATE_KEY,
     scopes: ['https://www.googleapis.com/auth/calendar'],
   });
+
+
 
   jwtClient.authorize((err,tokens) => {
     if (err) {
