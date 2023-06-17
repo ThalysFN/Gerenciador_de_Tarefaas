@@ -58,19 +58,6 @@ passport.use(
 // Defina os escopos que precisamos acessar
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
 
-const jwtClient = new google.auth.JWT(
-    process.env.CLIENT_EMAIL,
-  null,
-    process.env.PRIVATE_KEY,
-  SCOPES
-);
-
-const calendar = google.calendar({
-  version: "v3",
-  project: process.env.PROJECT_ID,
-  auth: jwtClient,
-});
-
 const auth = new google.auth.GoogleAuth({
   key: process.env.PRIVATE_KEY,
   scopes: SCOPES,
@@ -157,8 +144,6 @@ function initClient() {
     
 }
 
-
-
 app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -223,6 +208,7 @@ app.use("/main", routes);
 app.use("/tarefa", routes);
 app.use("/cadastro", routes);
 app.use("/criartarefa",routes);
+app.use("/criarEvento",routes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

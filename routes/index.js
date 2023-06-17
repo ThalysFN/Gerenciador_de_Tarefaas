@@ -3,6 +3,8 @@ const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const { readData, writeData } = require("../filestorage");
+const { google } = require('google-auth-library');
+const { JWT } = require('google-auth-library');
 
 let users = [];
 
@@ -161,6 +163,55 @@ router.get("/criartarefa", (req, res) => {
       }
     );
   }
+});
+router.post('/createEvent', (req, res) => {
+  // Extrair os dados do formulário
+  const { eventTitle, eventStart, eventEnd, eventDescription } = req.body;
+
+  // Criar objeto de evento
+  const event = {
+    summary: eventTitle,
+    start: {
+      dateTime: eventStart,
+      timeZone: 'America/New_York',
+    },
+    end: {
+      dateTime: eventEnd,
+      timeZone: 'America/New_York',
+    },
+    description: eventDescription,
+  };
+
+  // Fazer a autenticação e criar o evento no calendário
+  const jwtClient = new JWT({
+    email: process.env.CLIENT_EMAIL,
+    key: PRIVATE_KEY,
+    scopes: ['https://www.googleapis.com/auth/calendar'],
+  });
+
+  jwtClient.authorize((err,tokens) => {
+    if (err) {
+      console.error('Erro na autenticação:', err);
+      return;
+    }
+
+    calendar.events.insert(
+      {
+        auth: jwtClient,
+        calendarId: process.env.CALENDAR_ID,
+        resource: event,
+      },
+      (err, event) => {
+        if (err) {
+          console.error('Erro ao criar evento:', err);
+          res.send('Erro ao criar evento.');
+        } else {
+          console.log('Evento criado:', event.data);
+          res.send('Evento criado com sucesso!');
+        }
+      }
+    );
+  });
 });
 
 module.exports = router;
