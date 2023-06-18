@@ -99,44 +99,14 @@ function handleClientLoad() {
 // Função para inicializar a biblioteca do Google Calendar API
 function initClient() {
   gapi.client.init({
-    clientId: "801538061580-sg0a8iku9leddfh1v2c0c3at4jvf6sda.apps.googleusercontent.com",
-    private_key: "AIzaSyCCtHbadqRjVUiOhGLKS-7doD6zkoFHvEk" ,
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    private_key: process.env.PRIVATE_KEY,
     discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
     scope: 'https://www.googleapis.com/auth/calendar.events'
   }).then(function () {
     // Adiciona um listener para o evento de submit do formulário
     document.getElementById('event-form').addEventListener('submit', createEvent);
   });
-}
-function createEvent(event) {
-  event.preventDefault();
-
-  var title = document.getElementById('event-title').value;
-  var start = document.getElementById('event-start').value;
-  var end = document.getElementById('event-end').value;
-  var description = document.getElementById('event-description').value;
-
-  var event = {
-    'summary': title,
-    'start': {
-      'dateTime': start,
-    },
-    'end': {
-      'dateTime': end,
-    },
-    'description': description
-  };
-  gapi.client.calendar.events.insert({
-    'calendarId': 'primary',
-  
-  }).then(function (response) {
-    console.log('Evento criado: ', response);
-    alert('Evento criado com sucesso!');
-  }, function (error) {
-    console.error('Erro ao criar evento: ', error);
-    alert('Erro ao criar evento. Verifique o console para mais informações.');
-  });
-  
 }
 
 app.use(express.static(__dirname + "/public"));
