@@ -2,9 +2,12 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
+const { JWT } = google.auth;
+require('dotenv').config();
+const { google } = require ("googleapis")
 const { readData, writeData } = require("../filestorage");
-const jwt = require('jsonwebtoken');
 const { JWT } = require('google-auth-library');
+const { GoogleApis } = require("googleapis");
 let users = [];
 
 // Carregar os dados dos usuários do MongoDB
@@ -180,8 +183,13 @@ router.post('/creatEvent', (req, res) => {
     },
     description: eventDescription,
   };
-
   // Fazer a autenticação e criar o evento no calendário
+  const jwtClient = new JWT({
+    email: process.env.CLIENT_EMAIL,
+    key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
+    scopes: ['https://www.googleapis.com/auth/calendar'],
+  });
+  
   jwtClient.authorize((err, tokens) => {
     if (err) {
       console.error('Erro na autenticação:', err);
