@@ -1,35 +1,62 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="pt">
+
 <head>
   <meta charset="UTF-8">
   <title>Criar tarefa</title>
-  <link rel="stylesheet" type="text/css" href="../Estilos/estilos.css" />
+  <link rel="stylesheet" type="text/css" href="/css/estilo.css" />
   <script src="https://apis.google.com/js/api.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="app.js"></script>
-</head>
-<body>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link rel="stylesheet" href="/css/style.css">
-  <h1>Criar tarefa</h1><a href="/main" style="color:#1c005e">Voltar</a></br>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      max-width: 500px;
+    }
+  </style>
+</head>
+
+<body>
   <div class="container">
+    <h1>Criar tarefa</h1>
+    <a href="/main" style="color:#1c005e">Voltar</a><br><br>
     <form id="event-form" action="/creatEvent" method="post">
-      <label for="event-title">Título:</label>
-      <input type="text" id="event-title" name="event-title" required>
+      <div class="form-group">
+        <label for="event-title">Título:</label>
+        <input type="text" class="form-control" id="event-title" name="event-title" required>
+      </div>
 
-      <label for="event-start">Início:</label>
-      <input type="datetime-local" id="event-start" name="event-start" required>
+      <div class="form-group">
+        <label for="event-start">Início:</label>
+        <input type="datetime-local" class="form-control" id="event-start" name="event-start" required>
+      </div>
 
-      <label for="event-end">Fim:</label>
-      <input type="datetime-local" id="event-end" name="event-end" required>
+      <div class="form-group">
+        <label for="event-end">Fim:</label>
+        <input type="datetime-local" class="form-control" id="event-end" name="event-end" required>
+      </div>
 
-      <label for="event-description">Descrição:</label>
-      <textarea id="event-description" name="event-description"></textarea>
+      <div class="form-group">
+        <label for="event-description">Descrição:</label>
+        <textarea class="form-control" id="event-description" name="event-description"></textarea>
+      </div>
 
-      <input type="submit" value="Criar Evento">
+      <input type="submit" class="btn btn-primary" value="Criar Evento">
     </form>
   </div>
-  
-</body>
-</html>
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MZO2fyJ/1DKrqNKLSz/gzmfIRe0XB6i3Och1MIk6MijCJlJQr3T4ZL1bEswYU8x2" crossorigin="anonymous"></script>
+</body>
+
+</html>

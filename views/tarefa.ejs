@@ -2,19 +2,26 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <!-- Adicionando o Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 </head>
 <body>
-  <h1>Alterar Tarefa</h1><a href="/main" style="color:#1c005e">Voltar</a>
-  <form action="/main" method="get">
-    <div class="alteratarefa">
+  <div class="container">
+    <h1>Alterar Tarefa</h1>
+    <a href="/main" class="btn btn-primary">Voltar</a>
+    <form action="/main" method="get">
+      <div class="form-group">
         <label for="tarefa">Tarefa:</label>
-        <input type="text" id="tarefa" style="width: 80%; height: 50px;"/>
+        <input type="text" id="tarefa" class="form-control" style="width: 80%; height: 50px;">
       </div>
-    <div class="form-group">
-      <button type="submit">Alterar</button>
-    </div>
-  </form>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Alterar</button>
+      </div>
+    </form>
+  </div>
+  <!-- Adicionando o Bootstrap JS (opcional) -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,48 @@
+/* estilo.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    color: #4caf50;
+  }
+  
+  form label {
+    display: block;
+    margin-top: 10px;
+  }
+  
+  form input,
+  form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  form input[type="submit"] {
+    background-color: #1c005e;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #1c005e;
+  }
+  
