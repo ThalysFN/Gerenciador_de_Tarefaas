@@ -162,6 +162,7 @@ router.get("/criartarefa", (req, res) => {
     );
   }
 });
+
 router.post('/creatEvent', (req, res) => {
   // Extrair os dados do formulário
   const { eventTitle, eventStart, eventEnd, eventDescription } = req.body;
