@@ -2,8 +2,11 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
+require('dotenv').config();
+const { google } = require ("googleapis")
 const { readData, writeData } = require("../filestorage");
-
+const { JWT } = require('google-auth-library');
+const { GoogleApis } = require("googleapis");
 let users = [];
 
 // Carregar os dados dos usuários do MongoDB
@@ -109,6 +112,7 @@ router.get(
       "profile",
       "email",
       "https://www.googleapis.com/auth/calendar.readonly",
+      "https://www.googleapis.com/calendar/v3/calendars"
     ],
   })
 );
@@ -131,17 +135,20 @@ router.get("/criartarefa", (req, res) => {
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      process.env.CALLBACK_URL
+      process.env.CALLBACK_URL,
+      process.env.PRIVATE_KEY,
+      process.env.CALENDAR_ID,
+      process.env.KEY
     );
     oauth2Client.setCredentials({
       access_token: req.user.accessToken,
     });
-
+   
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
     calendar.events.list(
       {
-        calendarId: "primary",
+        calendarId: process.env.CALENDAR_ID,
         timeMin: new Date().toISOString(),
         maxResults: 10,
         singleEvents: true,
@@ -159,5 +166,56 @@ router.get("/criartarefa", (req, res) => {
     );
   }
 });
+
+router.post('/creatEvent', (req, res) => {
+  // Extrair os dados do formulário
+  const { eventTitle, eventStart, eventEnd, eventDescription } = req.body;
+
+  // Criar objeto de evento
+  const event = {
+    summary: eventTitle,
+    start: {
+      dateTime: eventStart,
+      timeZone: 'America/New_York',
+    },
+    end: {
+      dateTime: eventEnd,
+      timeZone: 'America/New_York',
+    },
+    description: eventDescription,
+  };
+  // Fazer a autenticação e criar o evento no calendário
+  const jwtClient = new JWT({
+    email: process.env.CLIENT_EMAIL,
+    key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
+    scopes: ['https://www.googleapis.com/auth/calendar']
+  });
+  
+  jwtClient.authorize((err, tokens) => {
+    if (err) {
+      console.error('Erro na autenticação:', err);
+      return;
+    }
+    const keyAPI = process.env.KEY;
+    const calendar = google.calendar({ version: 'v3', auth: process.env.KEY });
+    calendar.events.insert(
+      {
+        auth: jwtClient,
+        calendarId: process.env.CALENDAR_ID, // Use o ID do calendário correto
+        resource: event,
+      },
+      (err, event) => {
+        if (err) {
+          console.error('Erro ao criar evento:', err);
+          res.send('Erro ao criar evento.');
+        } else {
+          console.log('Evento criado:', event.data);
+          res.send('Evento criado com sucesso!');
+        }
+      }
+    );
+  });
+});
+
 
 module.exports = router;

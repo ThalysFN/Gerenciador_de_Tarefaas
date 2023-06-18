@@ -1,13 +1,34 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
   <title>Criar tarefa</title>
   <link rel="stylesheet" type="text/css" href="../Estilos/estilos.css" />
+  <script src="https://apis.google.com/js/api.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="app.js"></script>
 </head>
 <body>
   <link rel="stylesheet" href="/css/style.css">
   <h1>Criar tarefa</h1><a href="/main" style="color:#1c005e">Voltar</a></br>
+  <div class="container">
+    <form id="event-form" action="/creatEvent" method="post">
+      <label for="event-title">Título:</label>
+      <input type="text" id="event-title" name="event-title" required>
+
+      <label for="event-start">Início:</label>
+      <input type="datetime-local" id="event-start" name="event-start" required>
+
+      <label for="event-end">Fim:</label>
+      <input type="datetime-local" id="event-end" name="event-end" required>
+
+      <label for="event-description">Descrição:</label>
+      <textarea id="event-description" name="event-description"></textarea>
+
+      <input type="submit" value="Criar Evento">
+    </form>
+  </div>
   
 </body>
 </html>
