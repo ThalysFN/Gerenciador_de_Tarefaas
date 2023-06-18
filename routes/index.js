@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const bcrypt = require("bcrypt");
 const { readData, writeData } = require("../filestorage");
 const { google } = require('google-auth-library');
 const { JWT } = require('google-auth-library');
