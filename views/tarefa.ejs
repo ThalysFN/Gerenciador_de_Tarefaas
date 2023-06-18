@@ -6,6 +6,53 @@
   <title>Login</title>
   <!-- Adicionando o Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <style>
+    /* Adicionando estilos personalizados */
+    body {
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      margin-top: 50px;
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 30px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 30px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .form-control {
+      height: 50px;
+      border-radius: 5px;
+      border: 1px solid #ced4da;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0069d9;
+      border-color: #0062cc;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -14,7 +61,7 @@
     <form action="/main" method="get">
       <div class="form-group">
         <label for="tarefa">Tarefa:</label>
-        <input type="text" id="tarefa" class="form-control" style="width: 80%; height: 50px;">
+        <input type="text" id="tarefa" class="form-control">
       </div>
       <div class="form-group">
         <button type="submit" class="btn btn-primary">Alterar</button>
