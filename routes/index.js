@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
-const { JWT } = google.auth;
 require('dotenv').config();
 const { google } = require ("googleapis")
 const { readData, writeData } = require("../filestorage");
@@ -113,6 +112,7 @@ router.get(
       "profile",
       "email",
       "https://www.googleapis.com/auth/calendar.readonly",
+      "https://www.googleapis.com/calendar/v3/calendars"
     ],
   })
 );
@@ -137,12 +137,13 @@ router.get("/criartarefa", (req, res) => {
       process.env.GOOGLE_CLIENT_SECRET,
       process.env.CALLBACK_URL,
       process.env.PRIVATE_KEY,
-      process.env.CALENDAR_ID
+      process.env.CALENDAR_ID,
+      process.env.KEY
     );
     oauth2Client.setCredentials({
       access_token: req.user.accessToken,
     });
-
+   
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
     calendar.events.list(
@@ -187,7 +188,7 @@ router.post('/creatEvent', (req, res) => {
   const jwtClient = new JWT({
     email: process.env.CLIENT_EMAIL,
     key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
-    scopes: ['https://www.googleapis.com/auth/calendar'],
+    scopes: ['https://www.googleapis.com/auth/calendar']
   });
   
   jwtClient.authorize((err, tokens) => {
@@ -195,7 +196,8 @@ router.post('/creatEvent', (req, res) => {
       console.error('Erro na autenticação:', err);
       return;
     }
-
+    const keyAPI = process.env.KEY;
+    const calendar = google.calendar({ version: 'v3', auth: process.env.KEY });
     calendar.events.insert(
       {
         auth: jwtClient,
