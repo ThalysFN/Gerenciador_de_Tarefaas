@@ -111,8 +111,7 @@ router.get(
     scope: [
       "profile",
       "email",
-      "https://www.googleapis.com/auth/calendar.readonly",
-      "https://www.googleapis.com/calendar/v3/calendars"
+      "https://www.googleapis.com/auth/calendar",
     ],
   })
 );
@@ -164,7 +163,7 @@ router.get("/criartarefa", (req, res) => {
         }
       }
     );
-  }
+  }scopes
 });
 
 router.post('/creatEvent', (req, res) => {
@@ -196,8 +195,8 @@ router.post('/creatEvent', (req, res) => {
       console.error('Erro na autenticação:', err);
       return;
     }
-    const keyAPI = process.env.KEY;
-    const calendar = google.calendar({ version: 'v3', auth: process.env.KEY });
+
+    const calendar = google.calendar({ version: 'v3', auth: jwtClient});
     calendar.events.insert(
       {
         auth: jwtClient,
