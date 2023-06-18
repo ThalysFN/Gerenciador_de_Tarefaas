@@ -7,6 +7,7 @@ const { google } = require('google-auth-library');
 const { JWT } = require('google-auth-library');
 const fs = require('fs');
 const crypto = require('crypto');
+require('dotenv').config();
 let users = [];
 
 // Carregar os dados dos usuários do MongoDB
@@ -182,6 +183,7 @@ router.post('/createEvent', (req, res) => {
     },
     description: eventDescription,
   };
+  
 
   // Fazer a autenticação e criar o evento no calendário
   const jwtClient = new JWT({
@@ -190,8 +192,7 @@ router.post('/createEvent', (req, res) => {
     scopes: ['https://www.googleapis.com/auth/calendar'],
   });
 
-
-
+  
   jwtClient.authorize((err,tokens) => {
     if (err) {
       console.error('Erro na autenticação:', err);
@@ -216,5 +217,9 @@ router.post('/createEvent', (req, res) => {
     );
   });
 });
+
+
+
+
 
 module.exports = router;
