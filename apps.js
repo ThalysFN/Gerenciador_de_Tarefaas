@@ -59,19 +59,6 @@ passport.use(
 // Defina os escopos que precisamos acessar
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
 
-const jwtClient = new google.auth.JWT(
-    process.env.CLIENT_EMAIL,
-  null,
-    process.env.PRIVATE_KEY,
-  SCOPES
-);
-
-const calendar = google.calendar({
-  version: "v3",
-  project: process.env.PROJECT_ID,
-  auth: jwtClient,
-});
-
 const auth = new google.auth.GoogleAuth({
   key: process.env.PRIVATE_KEY,
   scopes: SCOPES,
@@ -96,39 +83,22 @@ function handleClientLoad() {
   gapi.load('client:auth2', initClient);
 }
 
-// Função para inicializar a biblioteca do Google Calendar API
-function initClient() {
-  gapi.client.init({
-    clientId: "801538061580-sg0a8iku9leddfh1v2c0c3at4jvf6sda.apps.googleusercontent.com",
-    private_key: "AIzaSyCCtHbadqRjVUiOhGLKS-7doD6zkoFHvEk" ,
-    discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-    scope: 'https://www.googleapis.com/auth/calendar.events'
-  }).then(function () {
-    // Adiciona um listener para o evento de submit do formulário
-    document.getElementById('event-form').addEventListener('submit', createEvent);
-  });
-}
-function createEvent(event) {
-  event.preventDefault();
-
-  var title = document.getElementById('event-title').value;
-  var start = document.getElementById('event-start').value;
-  var end = document.getElementById('event-end').value;
-  var description = document.getElementById('event-description').value;
-
+// Função para criar evento no Google Calendar
+function createEvent(eventTitle, eventStart, eventEnd, eventDescription) {
   var event = {
-    'summary': title,
+    'summary': eventTitle,
     'start': {
-      'dateTime': start,
+      'dateTime': eventStart
     },
     'end': {
-      'dateTime': end,
+      'dateTime': eventEnd
     },
-    'description': description
+    'description': eventDescription
   };
+
   gapi.client.calendar.events.insert({
-    'calendarId': 'primary',
-  
+    'calendarId': process.env.CALENDARID,
+    'resource': event
   }).then(function (response) {
     console.log('Evento criado: ', response);
     alert('Evento criado com sucesso!');
@@ -136,7 +106,43 @@ function createEvent(event) {
     console.error('Erro ao criar evento: ', error);
     alert('Erro ao criar evento. Verifique o console para mais informações.');
   });
-  
+}
+function getURLParameters(url) {
+  var params = {};
+  var paramString = url.split('?')[1];
+  if (paramString) {
+    var paramPairs = paramString.split('&');
+    paramPairs.forEach(function (pair) {
+      var param = pair.split('=');
+      params[param[0]] = decodeURIComponent(param[1]);
+    });
+  }
+  return params;
+}
+
+// Função para inicializar a biblioteca do Google Calendar API
+function initClient() {
+  gapi.client.init({
+    private_key: process.env.PRIVATE_KEY,
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+    scope: 'https://www.googleapis.com/auth/calendar.events'
+  }).then(function () {
+    // Extrai parâmetros da URL
+    var urlParams = getURLParameters(window.location.href);
+    var eventTitle = urlParams['event-title'];
+    var eventStart = urlParams['event-start'];
+    var eventEnd = urlParams['event-end'];
+    var eventDescription = urlParams['event-description'];
+
+    if (window.location.href.startsWith(expectedURL)) {
+      // Cria o evento no Google Calendar com os dados da URL
+      createEvent(eventTitle, eventStart, eventEnd, eventDescription);
+    } else {
+      console.log('A página foi carregada de uma URL diferente. A criação de eventos não será executada.');
+    }
+  });
+    
 }
 
 app.use(express.static(__dirname + "/public"));
@@ -197,12 +203,15 @@ passport.deserializeUser(async (id, done) => {
 });
 
 
+
+
 app.set("views", path.join(__dirname, "views"));
 app.use("/", routes);
 app.use("/main", routes);
 app.use("/tarefa", routes);
 app.use("/cadastro", routes);
 app.use("/criartarefa",routes);
+app.use("/criarEvento",routes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
