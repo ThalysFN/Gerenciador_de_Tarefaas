@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
+const moment = require('moment');
 require('dotenv').config();
 const { google } = require ("googleapis")
 const { readData, writeData } = require("../filestorage");
@@ -166,23 +167,31 @@ router.get("/criartarefa", (req, res) => {
   }scopes
 });
 
-router.post('/creatEvent', (req, res) => {
-  // Extrair os dados do formulário
-  const { eventTitle, eventStart, eventEnd, eventDescription } = req.body;
+router.post('/creatEvent', async (req, res) => {
 
-  // Criar objeto de evento
-  const event = {
-    summary: eventTitle,
-    start: {
-      dateTime: eventStart,
-      timeZone: 'America/New_York',
-    },
-    end: {
-      dateTime: eventEnd,
-      timeZone: 'America/New_York',
-    },
-    description: eventDescription,
-  };
+    // Extrair os dados do formulário
+    const { eventTitle, eventStart, eventEnd, eventDescription } = req.body;
+
+    // Converter a data e hora para o formato adequado
+    const startMoment = moment(eventStart, 'YYYY-MM-DDTHH:mm');
+    const endMoment = moment(eventEnd, 'YYYY-MM-DDTHH:mm');
+
+    const startDateTime = startMoment.toISOString();
+    const endDateTime = endMoment.toISOString();
+
+    // Criar objeto de evento
+    const event = {
+      summary: eventTitle,
+      start: {
+        dateTime: startDateTime,
+        timeZone: 'America/New_York',
+      },
+      end: {
+        dateTime: endDateTime,
+        timeZone: 'America/New_York',
+      },
+      description: eventDescription,
+    };
   // Fazer a autenticação e criar o evento no calendário
   const jwtClient = new JWT({
     email: process.env.CLIENT_EMAIL,
