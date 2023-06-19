@@ -193,7 +193,7 @@ router.post('/creatEvent', async (req, res) => {
       description: eventDescription,
     };
 
- try{
+
   // Fazer a autenticação e criar o evento no calendário
   const jwtClient = new JWT({
     email: process.env.CLIENT_EMAIL,
@@ -208,26 +208,6 @@ router.post('/creatEvent', async (req, res) => {
         resource: event,
       }
     );
-
-    
-    // Obter a lista de eventos do calendário
-    const eventsList = await calendar.events.list({
-      calendarId: process.env.CALENDAR_ID, // Defina o ID do calendário desejado
-      timeMin: startDateTime, // Data mínima para buscar eventos
-      timeMax: endDateTime, // Data máxima para buscar eventos
-      maxResults: 10, // Número máximo de eventos a serem retornados
-      singleEvents: true,
-      orderBy: 'startTime',
-    });
-  // Extrair os eventos da resposta
-    const events = eventsList.data.items;
-        // Renderizar a view com a lista de eventos
-        res.render('eventos', { events });
-      } catch (error) {
-        console.error('Erro ao criar ou obter a lista de eventos:', error);
-        res.status(500).send('Erro ao criar ou obter a lista de eventos.');
-      }
-
 });
 
 
