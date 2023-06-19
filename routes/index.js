@@ -192,6 +192,8 @@ router.post('/creatEvent', async (req, res) => {
       },
       description: eventDescription,
     };
+
+ try{
   // Fazer a autenticação e criar o evento no calendário
   const jwtClient = new JWT({
     email: process.env.CLIENT_EMAIL,
@@ -206,7 +208,8 @@ router.post('/creatEvent', async (req, res) => {
         resource: event,
       }
     );
-      
+
+    
     // Obter a lista de eventos do calendário
     const eventsList = await calendar.events.list({
       calendarId: process.env.CALENDAR_ID, // Defina o ID do calendário desejado
@@ -216,15 +219,15 @@ router.post('/creatEvent', async (req, res) => {
       singleEvents: true,
       orderBy: 'startTime',
     });
-    try{
-    console.log('Lista de eventos:', eventsList.data.items);
+  // Extrair os eventos da resposta
+    const events = eventsList.data.items;
+        // Renderizar a view com a lista de eventos
+        res.render('eventos', { events });
+      } catch (error) {
+        console.error('Erro ao criar ou obter a lista de eventos:', error);
+        res.status(500).send('Erro ao criar ou obter a lista de eventos.');
+      }
 
-    // Renderizar a página com a lista de eventos
-    res.render('event-list', { events: eventsList.data.items });
-  } catch (error) {
-    console.error('Erro ao criar evento:', error);
-    res.status(500).json({ message: 'Erro ao criar evento no Google Calendar.' });
-  }
 });
 
 

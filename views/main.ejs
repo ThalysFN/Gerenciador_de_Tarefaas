@@ -36,33 +36,23 @@
     <h1 class="text-center mt-4">Bem-vindo ao Gerenciador de Tarefas</h1>
     <a href="/logout" class="d-block text-right mt-2">Sair</a>
     <a href="/criartarefa" class="d-block mt-3">Criar Tarefa</a>
-    <div class="atividade">
-      <h3>Exemplo tarefa 1</h3>
-      <p>Tarefa 1</p>
-      <form action="/tarefa" method="get">
-        <button type="submit" class="btn btn-primary">Alterar</button>
-        <button class="btn btn-danger">Delete</button>
-      </form>
-    </div>
-    <div class="atividade">
-      <h3>Exemplo tarefa 2</h3>
-      <p>Tarefa 2</p>
-      <form action="/tarefa" method="get">
-        <button type="submit" class="btn btn-primary">Alterar</button>
-        <button class="btn btn-danger">Delete</button>
-      </form>
-    </div>
-    <div class="atividade">
-      <h3>Exemplo tarefa 3</h3>
-      <p>Tarefa 3</p>
-      <form action="/tarefa" method="get">
-        <button type="submit" class="btn btn-primary">Alterar</button>
-        <button class="btn btn-danger">Delete</button>
-      </form>
-    </div>
-  </div>
 
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <% if (events.length > 0) { %>
+      <% events.forEach((event) => { %>
+        <div class="atividade">
+          <h3><%= event.summary %></h3>
+          <p><%= event.start.dateTime %></p>
+          <form action="/tarefa" method="get">
+            <button type="submit" class="btn btn-primary">Alterar</button>
+            <button class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <p>Nenhum evento encontrado.</p>
+    <% } %>
+    
+  </div>
 </body>
 
 </html>
