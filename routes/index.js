@@ -198,31 +198,33 @@ router.post('/creatEvent', async (req, res) => {
     key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
     scopes: ['https://www.googleapis.com/auth/calendar']
   });
-  
-  jwtClient.authorize((err, tokens) => {
-    if (err) {
-      console.error('Erro na autenticação:', err);
-      return;
-    }
-
     const calendar = google.calendar({ version: 'v3', auth: jwtClient});
     calendar.events.insert(
       {
         auth: jwtClient,
         calendarId: process.env.CALENDAR_ID, // Use o ID do calendário correto
         resource: event,
-      },
-      (err, event) => {
-        if (err) {
-          console.error('Erro ao criar evento:', err);
-          res.send('Erro ao criar evento.');
-        } else {
-          console.log('Evento criado:', event.data);
-          res.send('Evento criado com sucesso!');
-        }
       }
     );
-  });
+      
+    // Obter a lista de eventos do calendário
+    const eventsList = await calendar.events.list({
+      calendarId: process.env.CALENDAR_ID, // Defina o ID do calendário desejado
+      timeMin: startDateTime, // Data mínima para buscar eventos
+      timeMax: endDateTime, // Data máxima para buscar eventos
+      maxResults: 10, // Número máximo de eventos a serem retornados
+      singleEvents: true,
+      orderBy: 'startTime',
+    });
+    try{
+    console.log('Lista de eventos:', eventsList.data.items);
+
+    // Renderizar a página com a lista de eventos
+    res.render('event-list', { events: eventsList.data.items });
+  } catch (error) {
+    console.error('Erro ao criar evento:', error);
+    res.status(500).json({ message: 'Erro ao criar evento no Google Calendar.' });
+  }
 });
 
 
