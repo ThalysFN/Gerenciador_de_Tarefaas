@@ -306,17 +306,17 @@ router.post('/creatEvent', async (req, res) => {
       auth: jwtClient,
       calendarId: process.env.CALENDAR_ID, // Use the correct calendar ID
       resource: event,
-    });
+      }); 
+        console.log('Tarefa criada com sucesso!');
+        console.log('Detalhes da tarefa:');
+        console.log(createdEvent);
 
-    console.log('Tarefa criada com sucesso!');
-    console.log('Detalhes da tarefa:');
-    console.log(createdEvent);
-
-    res.redirect('/tarefa'); // Redirect to the tasks page
-  } catch (error) {
-    console.error('Erro ao criar a tarefa:', error);
-    res.redirect('/tarefa'); // Redirect to the tasks page
+        res.redirect('/tarefa'); // Redirect to the tasks page
+      } catch (error) {
+        console.error('Erro ao criar a tarefa:', error);
+        res.redirect('/tarefa'); // Redirect to the tasks page
   }
+   
 });
 
 
