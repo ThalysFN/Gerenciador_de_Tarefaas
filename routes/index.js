@@ -94,14 +94,7 @@ router.post("/cadastro", async (req, res) => {
 router.get("/", function (req, res) {
   res.render("views/index");
 });
-router.get("/main", (req, res) => {
-  if (userProfile) {
-    // Verifique se o usuário está autenticado
-    res.render("views/main", { user: userProfile }); // Renderiza a view 'success' e passa o perfil do usuário
-  } else {
-    res.redirect("/"); // Se o usuário não estiver autenticado, redireciona para a página inicial
-  }
-});
+
 
 //app.get('/main', (req, res) => res.send(userProfile));
 router.get("/error", (req, res) => res.send("error logging in"));
@@ -168,106 +161,6 @@ router.get("/criartarefa", (req, res) => {
 });
 
 router.post('/creatEvent', async (req, res) => {
-
-    // Extrair os dados do formulário
-    const { eventTitle, eventStart, eventEnd, eventDescription } = req.body;
-
-    // Converter a data e hora para o formato adequado
-    const startMoment = moment(eventStart, 'YYYY-MM-DDTHH:mm');
-    const endMoment = moment(eventEnd, 'YYYY-MM-DDTHH:mm');
-
-    const startDateTime = startMoment.toISOString();
-    const endDateTime = endMoment.toISOString();
-
-    // Criar objeto de evento
-    const event = {
-        summary: eventTitle,
-        start: {
-            dateTime: startDateTime,
-            timeZone: 'America/New_York',
-        },
-        end: {
-            dateTime: endDateTime,
-            timeZone: 'America/New_York',
-        },
-        description: eventDescription,
-    };
-
-    // Fazer a autenticação e criar o evento no calendário
-    const jwtClient = new JWT({
-        email: process.env.CLIENT_EMAIL,
-        key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
-        scopes: ['https://www.googleapis.com/auth/calendar']
-    });
-    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
-    calendar.events.insert(
-        {
-            auth: jwtClient,
-            calendarId: process.env.CALENDAR_ID, // Use o ID do calendário correto
-            resource: event,
-        },
-        (err, creatEvent) => {
-            if (err) {
-                console.error('Erro ao criar a tarefa:', err);
-            } else {
-                console.log('Tarefa criada com sucesso!');
-                console.log('Detalhes da tarefa:');
-                console.log(creatEvent);
-            }
-        }
-    );
-});
-router.post('/creatEvent', async (req, res) => {
-
-    // Extrair os dados do formulário
-    const { eventTitle, eventStart, eventEnd, eventDescription } = req.body;
-
-    // Converter a data e hora para o formato adequado
-    const startMoment = moment(eventStart, 'YYYY-MM-DDTHH:mm');
-    const endMoment = moment(eventEnd, 'YYYY-MM-DDTHH:mm');
-
-    const startDateTime = startMoment.toISOString();
-    const endDateTime = endMoment.toISOString();
-
-    // Criar objeto de evento
-    const event = {
-        summary: eventTitle,
-        start: {
-            dateTime: startDateTime,
-            timeZone: 'America/New_York',
-        },
-        end: {
-            dateTime: endDateTime,
-            timeZone: 'America/New_York',
-        },
-        description: eventDescription,
-    };
-
-    // Fazer a autenticação e criar o evento no calendário
-    const jwtClient = new JWT({
-        email: process.env.CLIENT_EMAIL,
-        key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
-        scopes: ['https://www.googleapis.com/auth/calendar']
-    });
-    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
-    calendar.events.insert(
-        {
-            auth: jwtClient,
-            calendarId: process.env.CALENDAR_ID, // Use o ID do calendário correto
-            resource: event,
-        },
-        (err, creatEvent) => {
-            if (err) {
-                console.error('Erro ao criar a tarefa:', err);
-            } else {
-                console.log('Tarefa criada com sucesso!');
-                console.log('Detalhes da tarefa:');
-                console.log(creatEvent);
-            }
-        }
-    );
-});
-router.post('/creatEvent', async (req, res) => {
   // Extract the form data
   const { eventTitle, eventStart, eventEnd, eventDescription } = req.body;
 
@@ -308,18 +201,10 @@ router.post('/creatEvent', async (req, res) => {
       resource: event,
       }); 
         console.log('Tarefa criada com sucesso!');
-        console.log('Detalhes da tarefa:');
-        console.log(createdEvent);
-
-        res.redirect('/tarefa'); // Redirect to the tasks page
+        res.redirect('/main'); // Redirect to the tasks page
       } catch (error) {
         console.error('Erro ao criar a tarefa:', error);
-        res.redirect('/tarefa'); // Redirect to the tasks page
   }
-   
 });
-
-
-
 
 module.exports = router;
