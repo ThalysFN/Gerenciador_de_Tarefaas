@@ -181,34 +181,145 @@ router.post('/creatEvent', async (req, res) => {
 
     // Criar objeto de evento
     const event = {
-      summary: eventTitle,
-      start: {
-        dateTime: startDateTime,
-        timeZone: 'America/New_York',
-      },
-      end: {
-        dateTime: endDateTime,
-        timeZone: 'America/New_York',
-      },
-      description: eventDescription,
+        summary: eventTitle,
+        start: {
+            dateTime: startDateTime,
+            timeZone: 'America/New_York',
+        },
+        end: {
+            dateTime: endDateTime,
+            timeZone: 'America/New_York',
+        },
+        description: eventDescription,
     };
 
-
-  // Fazer a autenticação e criar o evento no calendário
-  const jwtClient = new JWT({
-    email: process.env.CLIENT_EMAIL,
-    key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
-    scopes: ['https://www.googleapis.com/auth/calendar']
-  });
-    const calendar = google.calendar({ version: 'v3', auth: jwtClient});
+    // Fazer a autenticação e criar o evento no calendário
+    const jwtClient = new JWT({
+        email: process.env.CLIENT_EMAIL,
+        key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
+        scopes: ['https://www.googleapis.com/auth/calendar']
+    });
+    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
     calendar.events.insert(
-      {
-        auth: jwtClient,
-        calendarId: process.env.CALENDAR_ID, // Use o ID do calendário correto
-        resource: event,
-      }
+        {
+            auth: jwtClient,
+            calendarId: process.env.CALENDAR_ID, // Use o ID do calendário correto
+            resource: event,
+        },
+        (err, creatEvent) => {
+            if (err) {
+                console.error('Erro ao criar a tarefa:', err);
+            } else {
+                console.log('Tarefa criada com sucesso!');
+                console.log('Detalhes da tarefa:');
+                console.log(creatEvent);
+            }
+        }
     );
 });
+router.post('/creatEvent', async (req, res) => {
+
+    // Extrair os dados do formulário
+    const { eventTitle, eventStart, eventEnd, eventDescription } = req.body;
+
+    // Converter a data e hora para o formato adequado
+    const startMoment = moment(eventStart, 'YYYY-MM-DDTHH:mm');
+    const endMoment = moment(eventEnd, 'YYYY-MM-DDTHH:mm');
+
+    const startDateTime = startMoment.toISOString();
+    const endDateTime = endMoment.toISOString();
+
+    // Criar objeto de evento
+    const event = {
+        summary: eventTitle,
+        start: {
+            dateTime: startDateTime,
+            timeZone: 'America/New_York',
+        },
+        end: {
+            dateTime: endDateTime,
+            timeZone: 'America/New_York',
+        },
+        description: eventDescription,
+    };
+
+    // Fazer a autenticação e criar o evento no calendário
+    const jwtClient = new JWT({
+        email: process.env.CLIENT_EMAIL,
+        key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
+        scopes: ['https://www.googleapis.com/auth/calendar']
+    });
+    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+    calendar.events.insert(
+        {
+            auth: jwtClient,
+            calendarId: process.env.CALENDAR_ID, // Use o ID do calendário correto
+            resource: event,
+        },
+        (err, creatEvent) => {
+            if (err) {
+                console.error('Erro ao criar a tarefa:', err);
+            } else {
+                console.log('Tarefa criada com sucesso!');
+                console.log('Detalhes da tarefa:');
+                console.log(creatEvent);
+            }
+        }
+    );
+});
+router.post('/creatEvent', async (req, res) => {
+  // Extract the form data
+  const { eventTitle, eventStart, eventEnd, eventDescription } = req.body;
+
+  // Convert the date and time to the appropriate format
+  const startMoment = moment(eventStart, 'YYYY-MM-DDTHH:mm');
+  const endMoment = moment(eventEnd, 'YYYY-MM-DDTHH:mm');
+
+  const startDateTime = startMoment.toISOString();
+  const endDateTime = endMoment.toISOString();
+
+  // Create the event object
+  const event = {
+    summary: eventTitle,
+    start: {
+      dateTime: startDateTime,
+      timeZone: 'America/New_York',
+    },
+    end: {
+      dateTime: endDateTime,
+      timeZone: 'America/New_York',
+    },
+    description: eventDescription,
+  };
+
+  try {
+    // Authenticate and create the event in the calendar
+    const jwtClient = new JWT({
+      email: process.env.CLIENT_EMAIL,
+      key: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
+      scopes: ['https://www.googleapis.com/auth/calendar'],
+    });
+
+    const calendar = google.calendar({ version: 'v3', auth: jwtClient });
+
+    const createdEvent = await calendar.events.insert({
+      auth: jwtClient,
+      calendarId: process.env.CALENDAR_ID, // Use the correct calendar ID
+      resource: event,
+    });
+
+    console.log('Tarefa criada com sucesso!');
+    console.log('Detalhes da tarefa:');
+    console.log(createdEvent);
+
+    res.redirect('/tarefa'); // Redirect to the tasks page
+  } catch (error) {
+    console.error('Erro ao criar a tarefa:', error);
+    res.redirect('/tarefa'); // Redirect to the tasks page
+  }
+});
+
+
 
 
 module.exports = router;
